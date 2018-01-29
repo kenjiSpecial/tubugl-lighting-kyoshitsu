@@ -1,0 +1,26 @@
+{
+  "name": "paracel-prtotype-kit",
+  "version": "1.0.0",
+  "description": "prototype tool with parcel",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "00-directionalLight": "parcel examples/00-directionalLight/index.html --no-hmr",
+    "dist00": "parcel build examples/example00/index.html -d docs/example00 --public-url ./",
+    "screenshot00": "node ./node/screenshot.js --dir=example00",
+    "docs": "python -m SimpleHTTPServer 8000"
+  },
+  "dependencies": {
+    "tubugl-constants": "^1.0.3",
+    "tubugl-core": "^1.1.6",
+    "tubugl-math": "^1.1.8"
+  },
+  "devDependencies": {
+    "babel-preset-env": "^1.6.1",
+    "gsap": "^1.20.3",
+    "minimist": "^1.2.0",
+    "parcel-plugin-glsl": "kenjiSpecial/parcel-plugin-glsl",
+    "puppeteer": "^0.13.0",
+    "stats.js": "mrdoob/stats.js"
+  }
+}
