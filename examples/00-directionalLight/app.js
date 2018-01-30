@@ -3,8 +3,11 @@ const TweenLite = require('gsap/src/uncompressed/TweenLite');
 const Stats = require('stats.js');
 
 import { Program, ArrayBuffer, IndexArrayBuffer } from 'tubugl-core';
+import { Sphere } from 'tubugl-3d-shape/src/sphere';
+import { PerspectiveCamera, CameraController } from 'tubugl-camera';
 import vertexShader from './components/shaders/shader.vert';
 import fragmentShader from './components/shaders/shader.frag';
+import { DEPTH_TEST } from 'tubugl-constants';
 
 export default class App {
 	constructor(params = {}) {
@@ -24,13 +27,42 @@ export default class App {
 			descId.style.display = 'none';
 		}
 
-		this._createProgram();
+		this._setClearConfig();
+		this._makeCamera();
+		this._makeCameraController();
+		this._makeSphere();
 		this.resize(this._width, this._height);
 	}
 
 	_addGui() {
 		this.gui = new dat.GUI();
 		this.playAndStopGui = this.gui.add(this, '_playAndStop').name('pause');
+	}
+
+	_setClearConfig() {
+		this.gl.clearColor(0.0, 0.0, 0.0, 1.0);
+		this.gl.enable(DEPTH_TEST);
+	}
+
+	_makeCamera() {
+		this._camera = new PerspectiveCamera(window.innerWidth, window.innerHeight, 60, 1, 2000);
+		this._camera.position.z = 600;
+		this._camera.position.x = -600;
+		this._camera.position.y = 200;
+		this._camera.lookAt([0, 0, 0]);
+	}
+
+	_makeCameraController() {
+		this._cameraController = new CameraController(this._camera, this.canvas);
+		this._cameraController.minDistance = 300;
+		this._cameraController.maxDistance = 1000;
+	}
+
+	_makeSphere() {
+		let side = 150;
+		this._sphere = new Sphere(this.gl, { isWire: true }, side, 15, 15);
+		this._sphere.position.y = side + 50;
+		this._sphere.position.x = side + 50;
 	}
 
 	_createProgram() {
@@ -70,15 +102,13 @@ export default class App {
 
 	loop() {
 		if (this.stats) this.stats.update();
+		let gl = this.gl;
+		gl.viewport(0, 0, this._width, this._height);
+		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-		this.gl.clearColor(0, 0, 0, 1);
-		this.gl.clear(this.gl.COLOR_BUFFER_BIT);
+		this._camera.update();
 
-		this._obj.program.bind();
-		this._obj.indexBuffer.bind();
-		this._obj.positionBuffer.bind().attribPointer(this._obj.program);
-
-		this.gl.drawElements(this.gl.TRIANGLES, this._obj.count, this.gl.UNSIGNED_SHORT, 0);
+		this._sphere.render(this._camera);
 	}
 
 	animateOut() {

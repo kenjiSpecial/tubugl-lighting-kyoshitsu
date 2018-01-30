@@ -6,7 +6,12 @@
 
 #### Directional Light
 
+Directional lighting assumes the light is coming uniformly from one direction
+
 referrence: https://webglfundamentals.org/webgl/lessons/webgl-3d-lighting-directional.html
+
+
+
 
 ## examples
 
@@ -19,8 +24,7 @@ you need to install [parcel](https://github.com/parcel-bundler/parcel) to run ex
 ```sh
 yarn
 
-yarn run 00-directionalLight 
-# or
+yarn run 00 # 00 - 
 
 ```
 
