@@ -2,17 +2,15 @@ const dat = require('../vendors/dat.gui.min');
 const TweenLite = require('gsap/src/uncompressed/TweenLite');
 const Stats = require('stats.js');
 
+import { Program, ArrayBuffer, IndexArrayBuffer } from 'tubugl-core';
 import { Sphere } from 'tubugl-3d-shape/src/sphere';
 import { Cube } from 'tubugl-3d-shape/src/cube';
 
 import { NormalHelper, GridHelper } from 'tubugl-helper';
 import { PerspectiveCamera, CameraController } from 'tubugl-camera';
+import vertexShader from './components/shaders/shader.vert';
+import fragmentShader from './components/shaders/shader.frag';
 import { DEPTH_TEST } from 'tubugl-constants';
-
-const directionalLightShader = {
-	vertexSrc: require('../../lightingShaders/0-directionalLighting/shader.vert'),
-	fragmentSrc: require('../../lightingShaders/0-directionalLighting/shader.frag')
-};
 
 export default class App {
 	constructor(params = {}) {
@@ -74,20 +72,9 @@ export default class App {
 
 	_makeBox() {
 		let side = 200;
-		this._box = new Cube(
-			this.gl,
-			{
-				vertexShaderSrc: directionalLightShader.vertexSrc,
-				fragmentShaderSrc: directionalLightShader.fragmentSrc,
-				isWire: false
-			},
-			side,
-			side,
-			side,
-			4,
-			4,
-			4
-		);
+		this._box = new Cube(this.gl, side, side, side, 8, 6, 4, {
+			isWire: false
+		});
 		this._box.position.y = side / 2;
 		this._box.position.x = -side / 2 - 50;
 	}
