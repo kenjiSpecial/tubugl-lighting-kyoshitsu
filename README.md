@@ -13,6 +13,8 @@ Directional lighting assumes the light is coming uniformly from one direction
 reference: https://webglfundamentals.org/webgl/lessons/webgl-3d-lighting-directional.html
 
 
+
+
 ## examples
 
 https://kenjispecial.github.io/tubugl-helper/
@@ -28,3 +30,7 @@ yarn run 00 # 00 -
 
 ```
 
+reference:
+
+- https://webglfundamentals.org
+- http://www.lighthouse3d.com/tutorials/glsl-12-tutorial/directional-lights-i/
