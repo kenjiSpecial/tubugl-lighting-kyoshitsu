@@ -8,9 +8,7 @@
 
 Directional lighting assumes the light is coming uniformly from one direction
 
-referrence: https://webglfundamentals.org/webgl/lessons/webgl-3d-lighting-directional.html
-
-
+reference: https://webglfundamentals.org/webgl/lessons/webgl-3d-lighting-directional.html
 
 
 ## examples
