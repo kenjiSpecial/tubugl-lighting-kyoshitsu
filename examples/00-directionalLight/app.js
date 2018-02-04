@@ -219,6 +219,8 @@ export default class App {
 		this.canvas.width = this._width;
 		this.canvas.height = this._height;
 		this.gl.viewport(0, 0, this._width, this._height);
+
+		this._camera.updateSize(this._width, this._height);
 	}
 
 	destroy() {}
