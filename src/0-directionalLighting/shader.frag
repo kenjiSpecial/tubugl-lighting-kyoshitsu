@@ -2,13 +2,13 @@ precision mediump float;
 
 varying vec3 vNormal;
 
-const vec3 uDiffuse = vec3(1.0, 0.0, 0.0);
+uniform vec3 uDiffuse;
 uniform vec3 uReverseLightDirection;
 
 void main(){
     vec3 normal = normalize(vNormal);
 
-    float light = dot(normal, uReverseLightDirection);
+    float light = max(dot(normal, uReverseLightDirection), 0.0);
 
-    gl_FragColor = vec4(uDiffuse * light, 1.0);
+    gl_FragColor = vec4(uDiffuse * 0.5 + uDiffuse * light, 1.0);
 }

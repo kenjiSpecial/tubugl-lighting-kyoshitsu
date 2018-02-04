@@ -1,6 +1,7 @@
 const dat = require('../vendors/dat.gui.min');
 const TweenLite = require('gsap/src/uncompressed/TweenLite');
 const Stats = require('stats.js');
+const chroma = require('chroma-js');
 
 import { DirectionalLightHelper } from '../../src/DirectionalLightHelper';
 
@@ -23,6 +24,7 @@ export default class App {
 		this._isMouseDown = false;
 		this._width = params.width ? params.width : window.innerWidth;
 		this._height = params.height ? params.height : window.innerHeight;
+		this._isNormalHelper = false;
 
 		this.canvas = document.createElement('canvas');
 		this.gl = this.canvas.getContext('webgl');
@@ -48,7 +50,22 @@ export default class App {
 	_addGui() {
 		this.gui = new dat.GUI();
 		this.playAndStopGui = this.gui.add(this, '_playAndStop').name('pause');
+		this.gui.add(this, '_isNormalHelper');
 		this._directionalLightHelper.addGui(this.gui);
+		let boxFolderGui = this.gui.addFolder('box');
+		boxFolderGui
+			.addColor(this, '_boxColor')
+			.name('color')
+			.onChange(() => {
+				this._glBoxColor = chroma(this._boxColor).gl();
+			});
+		let sphereFolderGui = this.gui.addFolder('sphere');
+		sphereFolderGui
+			.addColor(this, '_sphereColor')
+			.name('color')
+			.onChange(() => {
+				this._glSphereColor = chroma(this._sphereColor).gl();
+			});
 	}
 
 	_setClearConfig() {
@@ -85,6 +102,8 @@ export default class App {
 		);
 		this._sphere.position.y = side;
 		this._sphere.position.x = side + 50;
+		this._sphereColor = '#ffae23';
+		this._glSphereColor = chroma(this._sphereColor).gl();
 	}
 
 	_makeBox() {
@@ -107,6 +126,8 @@ export default class App {
 
 		this._box.position.y = side / 2;
 		this._box.position.x = -side / 2 - 50;
+		this._boxColor = '#ffffff';
+		this._glBoxColor = chroma(this._boxColor).gl();
 	}
 
 	_makeHelper() {
@@ -114,12 +135,9 @@ export default class App {
 		let sphereNormalHelper = new NormalHelper(this.gl, this._sphere);
 		let boxNormalHelper = new NormalHelper(this.gl, this._box);
 		this._directionalLightHelper = new DirectionalLightHelper(this.gl);
-		this._helpers = [
-			gridHelper,
-			sphereNormalHelper,
-			boxNormalHelper,
-			this._directionalLightHelper
-		];
+
+		this._helpers = [gridHelper, this._directionalLightHelper];
+		this._normalHelpers = [sphereNormalHelper, boxNormalHelper];
 	}
 
 	animateIn() {
@@ -135,11 +153,25 @@ export default class App {
 
 		this._camera.update();
 
-		this._box.render(this._camera, this._directionalLightHelper.lightDirection);
-		this._sphere.render(this._camera, this._directionalLightHelper.lightDirection);
+		this._box.render(
+			this._camera,
+			this._directionalLightHelper.lightDirection,
+			this._glBoxColor
+		);
+		this._sphere.render(
+			this._camera,
+			this._directionalLightHelper.lightDirection,
+			this._glSphereColor
+		);
 		this._helpers.forEach(helper => {
 			helper.render(this._camera);
 		});
+
+		if (this._isNormalHelper) {
+			this._normalHelpers.forEach(normalHelper => {
+				normalHelper.render(this._camera);
+			});
+		}
 	}
 
 	animateOut() {

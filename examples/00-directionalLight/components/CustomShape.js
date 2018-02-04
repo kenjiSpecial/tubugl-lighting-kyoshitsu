@@ -15,17 +15,23 @@ export class CustomCube extends Cube {
 		super(gl, params, width, height, depth, widthSegment, heightSegment, depthSegment);
 	}
 
-	render(camera, direction) {
-		this.update(camera, direction).draw();
+	render(camera, direction, color) {
+		this.update(camera, direction, color).draw();
 	}
 
-	update(camera, direction) {
+	update(camera, direction, color) {
 		super.update(camera);
 		this._gl.uniform3f(
 			this._program.getUniforms('uReverseLightDirection').location,
 			-direction[0],
 			-direction[1],
 			-direction[2]
+		);
+		this._gl.uniform3f(
+			this._program.getUniforms('uDiffuse').location,
+			color[0],
+			color[1],
+			color[2]
 		);
 		return this;
 	}
@@ -36,17 +42,23 @@ export class CustomSphere extends Sphere {
 		super(gl, params, radius, widthSegments, heightSegments);
 	}
 
-	render(camera, direction) {
-		this.update(camera, direction).draw();
+	render(camera, direction, color) {
+		this.update(camera, direction, color).draw();
 	}
 
-	update(camera, direction) {
+	update(camera, direction, color) {
 		super.update(camera);
 		this._gl.uniform3f(
 			this._program.getUniforms('uReverseLightDirection').location,
 			-direction[0],
 			-direction[1],
 			-direction[2]
+		);
+		this._gl.uniform3f(
+			this._program.getUniforms('uDiffuse').location,
+			color[0],
+			color[1],
+			color[2]
 		);
 		return this;
 	}
