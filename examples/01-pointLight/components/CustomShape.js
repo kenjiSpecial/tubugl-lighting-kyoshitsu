@@ -1,6 +1,5 @@
 import { Cube } from 'tubugl-3d-shape';
 import { Sphere } from 'tubugl-3d-shape/src/sphere';
-import { mat4 } from 'gl-matrix';
 
 export class CustomCube extends Cube {
 	constructor(
@@ -14,21 +13,14 @@ export class CustomCube extends Cube {
 		depthSegment = 1
 	) {
 		super(gl, params, width, height, depth, widthSegment, heightSegment, depthSegment);
-		this.isAnimation = params.isAnimation;
 	}
 
 	render(camera, direction, color) {
-		if (this.isAnimation) this.rotation.y += 0.01;
-
 		this.update(camera, direction, color).draw();
 	}
 
 	update(camera, direction, color) {
 		super.update(camera);
-		let _mat4 = mat4.create();
-		mat4.invert(_mat4, this.modelMatrix);
-		mat4.transpose(_mat4, _mat4);
-
 		this._gl.uniform3f(
 			this._program.getUniforms('uReverseLightDirection').location,
 			-direction[0],
@@ -41,9 +33,6 @@ export class CustomCube extends Cube {
 			color[1],
 			color[2]
 		);
-
-		this._gl.uniformMatrix4fv(this._program.getUniforms('normalMatrix').location, false, _mat4);
-
 		return this;
 	}
 }
@@ -51,22 +40,14 @@ export class CustomCube extends Cube {
 export class CustomSphere extends Sphere {
 	constructor(gl, params = {}, radius = 100, widthSegments = 10, heightSegments = 10) {
 		super(gl, params, radius, widthSegments, heightSegments);
-		this.isAnimation = params.isAnimation;
 	}
 
 	render(camera, direction, color) {
-		if (this.isAnimation) this.rotation.y += 0.01;
-
 		this.update(camera, direction, color).draw();
 	}
 
 	update(camera, direction, color) {
 		super.update(camera);
-
-		let _mat4 = mat4.create();
-		mat4.invert(_mat4, this.modelMatrix);
-		mat4.transpose(_mat4, _mat4);
-
 		this._gl.uniform3f(
 			this._program.getUniforms('uReverseLightDirection').location,
 			-direction[0],
@@ -79,9 +60,6 @@ export class CustomSphere extends Sphere {
 			color[1],
 			color[2]
 		);
-
-		this._gl.uniformMatrix4fv(this._program.getUniforms('normalMatrix').location, false, _mat4);
-
 		return this;
 	}
 }

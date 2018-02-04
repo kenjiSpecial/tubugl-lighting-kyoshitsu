@@ -1,6 +1,7 @@
 import { Plane } from 'tubugl-2d-shape';
 import { Cylinder, Cone } from 'tubugl-3d-shape';
 import { vec3, mat4 } from 'gl-matrix';
+import { Sphere } from 'tubugl-3d-shape/src/sphere';
 const fragmentShaderSrc = `precision mediump float;
 void main() {
     gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
@@ -8,20 +9,21 @@ void main() {
 
 import { mathUtils } from 'tubugl-utils';
 
-export class DirectionalLightHelper {
+export class PointLightHelper {
 	constructor(gl, params = {}, dir) {
 		this._gl = gl;
 
 		this._rad = 500;
 
-		this._plane = new Plane(
+		this._sphere = new Sphere(
 			this._gl,
 			{
 				disableUpdateModelMatrix: true,
 				fragmentShaderSrc: fragmentShaderSrc
 			},
-			100,
-			100
+			12,
+			10,
+			10
 		);
 
 		this._cylinder = new Cylinder(
@@ -82,9 +84,10 @@ export class DirectionalLightHelper {
 
 		let _mat4 = mat4.create();
 		mathUtils.lookAtCustom(_mat4, this.position, [0, 0, 0], [0, 1, 0]);
+
 		mat4.invert(_mat4, _mat4);
 
-		this._plane.updateModelMatrix(_mat4);
+		this._sphere.updateModelMatrix(_mat4);
 
 		vec3.normalize(this.lightDirection, [
 			-this.position[0],
@@ -94,17 +97,15 @@ export class DirectionalLightHelper {
 	}
 
 	render(camera) {
-		// console.log(this._plane._modelMatrix);
-		this._plane.render(camera);
-		// this._cylinderModelMatrix = mat4.this._cylinder.updateModelMatrix(this._plane._modelMatrix);
+		this._sphere.render(camera);
 		mat4.multiply(
 			this._cylinder.modelMatrix,
-			this._plane._modelMatrix,
+			this._sphere.modelMatrix,
 			this._cylinderLocalModelMatrix
 		);
 		this._cylinder.render(camera);
 
-		mat4.multiply(this._cone.modelMatrix, this._plane._modelMatrix, this._coneLocalModelMatrix);
+		mat4.multiply(this._cone.modelMatrix, this._sphere.modelMatrix, this._coneLocalModelMatrix);
 		this._cone.render(camera);
 	}
 

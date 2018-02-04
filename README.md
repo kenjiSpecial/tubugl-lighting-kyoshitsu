@@ -14,6 +14,9 @@ reference: https://webglfundamentals.org/webgl/lessons/webgl-3d-lighting-directi
 
 example: https://kenjispecial.github.io/tubugl-lighting-kyoshitsu/00/index.html
 
+#### Point LIght
+
+
 
 
 

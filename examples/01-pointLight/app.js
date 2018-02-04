@@ -3,7 +3,7 @@ const TweenLite = require('gsap/src/uncompressed/TweenLite');
 const Stats = require('stats.js');
 const chroma = require('chroma-js');
 
-import { DirectionalLightHelper } from '../../src/directionalLightHelper';
+import { PointLightHelper } from '../../src/pointLightHelper';
 
 import { NormalHelper, GridHelper } from 'tubugl-helper';
 import { PerspectiveCamera, CameraController } from 'tubugl-camera';
@@ -11,11 +11,9 @@ import { PerspectiveCamera, CameraController } from 'tubugl-camera';
 import { DEPTH_TEST } from 'tubugl-constants';
 import { CustomCube, CustomSphere } from './components/CustomShape';
 
-// console.log(CustomCube);
-
 const directionalLightShader = {
-	vertexSrc: require('../../src/directionalLighting/shader.vert'),
-	fragmentSrc: require('../../src/directionalLighting/shader.frag')
+	vertexSrc: require('../../src/0-directionalLighting/shader.vert'),
+	fragmentSrc: require('../../src/0-directionalLighting/shader.frag')
 };
 
 export default class App {
@@ -50,7 +48,7 @@ export default class App {
 		this.gui = new dat.GUI();
 		this.playAndStopGui = this.gui.add(this, '_playAndStop').name('pause');
 		this.gui.add(this, '_isNormalHelper');
-		this._directionalLightHelper.addGui(this.gui);
+		this._pointLightHelper.addGui(this.gui);
 		let boxFolderGui = this.gui.addFolder('box');
 		boxFolderGui
 			.addColor(this, '_boxColor')
@@ -58,8 +56,6 @@ export default class App {
 			.onChange(() => {
 				this._glBoxColor = chroma(this._boxColor).gl();
 			});
-		boxFolderGui.add(this._box, 'isAnimation');
-
 		let sphereFolderGui = this.gui.addFolder('sphere');
 		sphereFolderGui
 			.addColor(this, '_sphereColor')
@@ -67,7 +63,6 @@ export default class App {
 			.onChange(() => {
 				this._glSphereColor = chroma(this._sphereColor).gl();
 			});
-		sphereFolderGui.add(this._sphere, 'isAnimation');
 	}
 
 	_setClearConfig() {
@@ -96,7 +91,7 @@ export default class App {
 			{
 				vertexShaderSrc: directionalLightShader.vertexSrc,
 				fragmentShaderSrc: directionalLightShader.fragmentSrc,
-				isAnimation: true
+				isWire: false
 			},
 			side,
 			15,
@@ -116,7 +111,7 @@ export default class App {
 			{
 				vertexShaderSrc: directionalLightShader.vertexSrc,
 				fragmentShaderSrc: directionalLightShader.fragmentSrc,
-				isAnimation: true
+				isWire: false
 			},
 			side,
 			side,
@@ -136,9 +131,9 @@ export default class App {
 		let gridHelper = new GridHelper(this.gl, {}, 1000, 1000, 20, 20);
 		let sphereNormalHelper = new NormalHelper(this.gl, this._sphere);
 		let boxNormalHelper = new NormalHelper(this.gl, this._box);
-		this._directionalLightHelper = new DirectionalLightHelper(this.gl);
+		this._pointLightHelper = new PointLightHelper(this.gl);
 
-		this._helpers = [gridHelper, this._directionalLightHelper];
+		this._helpers = [gridHelper, this._pointLightHelper];
 		this._normalHelpers = [sphereNormalHelper, boxNormalHelper];
 	}
 
@@ -155,14 +150,10 @@ export default class App {
 
 		this._camera.update();
 
-		this._box.render(
-			this._camera,
-			this._directionalLightHelper.lightDirection,
-			this._glBoxColor
-		);
+		this._box.render(this._camera, this._pointLightHelper.lightDirection, this._glBoxColor);
 		this._sphere.render(
 			this._camera,
-			this._directionalLightHelper.lightDirection,
+			this._pointLightHelper.lightDirection,
 			this._glSphereColor
 		);
 		this._helpers.forEach(helper => {
