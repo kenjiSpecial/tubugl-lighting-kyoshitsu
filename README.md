@@ -8,7 +8,7 @@ https://kenjispecial.github.io/tubugl-lighting-kyoshitsu/
 
 #### Directional Light
 
-Directional lighting assumes the light is coming uniformly from one direction
+Directional lighting assumes the light is coming uniformly from one direction. the example below renders the face color of object with the directional light. 
 
 reference: https://webglfundamentals.org/webgl/lessons/webgl-3d-lighting-directional.html
 
