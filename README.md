@@ -2,6 +2,8 @@
 
 ## Contents
 
+https://kenjispecial.github.io/tubugl-lighting-kyoshitsu/
+
 ### Lighting
 
 #### Directional Light
