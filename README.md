@@ -12,12 +12,14 @@ Directional lighting assumes the light is coming uniformly from one direction
 
 reference: https://webglfundamentals.org/webgl/lessons/webgl-3d-lighting-directional.html
 
+example: https://kenjispecial.github.io/tubugl-lighting-kyoshitsu/00/index.html
+
 
 
 
 ## examples
 
-https://kenjispecial.github.io/tubugl-helper/
+https://kenjispecial.github.io/tubugl-lighting-kyoshitsu/00/index.html
 
 ## Running the examples locally
 
