@@ -2,16 +2,20 @@ const dat = require('../vendors/dat.gui.min');
 const TweenLite = require('gsap/src/uncompressed/TweenLite');
 const Stats = require('stats.js');
 
-import { Sphere } from 'tubugl-3d-shape/src/sphere';
-import { Cube } from 'tubugl-3d-shape/src/cube';
+import { DirectionalLightHelper } from '../../src/DirectionalLightHelper';
 
 import { NormalHelper, GridHelper } from 'tubugl-helper';
 import { PerspectiveCamera, CameraController } from 'tubugl-camera';
+
 import { DEPTH_TEST } from 'tubugl-constants';
+import { CustomCube, CustomSphere } from './components/CustomShape';
+import { vec3 } from 'gl-matrix';
+
+// console.log(CustomCube);
 
 const directionalLightShader = {
-	vertexSrc: require('../../lightingShaders/0-directionalLighting/shader.vert'),
-	fragmentSrc: require('../../lightingShaders/0-directionalLighting/shader.frag')
+	vertexSrc: require('../../src/0-directionalLighting/shader.vert'),
+	fragmentSrc: require('../../src/0-directionalLighting/shader.frag')
 };
 
 export default class App {
@@ -23,6 +27,14 @@ export default class App {
 		this.canvas = document.createElement('canvas');
 		this.gl = this.canvas.getContext('webgl');
 
+		this._setClearConfig();
+		this._makeCamera();
+		this._makeCameraController();
+		this._makeSphere();
+		this._makeBox();
+		this._makeHelper();
+		this.resize(this._width, this._height);
+
 		if (params.isDebug) {
 			this.stats = new Stats();
 			document.body.appendChild(this.stats.dom);
@@ -31,19 +43,12 @@ export default class App {
 			let descId = document.getElementById('tubugl-desc');
 			descId.style.display = 'none';
 		}
-
-		this._setClearConfig();
-		this._makeCamera();
-		this._makeCameraController();
-		this._makeSphere();
-		this._makeBox();
-		this._makeHelper();
-		this.resize(this._width, this._height);
 	}
 
 	_addGui() {
 		this.gui = new dat.GUI();
 		this.playAndStopGui = this.gui.add(this, '_playAndStop').name('pause');
+		this._directionalLightHelper.addGui(this.gui);
 	}
 
 	_setClearConfig() {
@@ -53,28 +58,39 @@ export default class App {
 
 	_makeCamera() {
 		this._camera = new PerspectiveCamera(window.innerWidth, window.innerHeight, 60, 1, 2000);
-		this._camera.position.z = 600;
-		this._camera.position.x = -600;
-		this._camera.position.y = 200;
+		this._camera.position.z = 800;
+		this._camera.position.x = -800;
+		this._camera.position.y = 400;
 		this._camera.lookAt([0, 0, 0]);
 	}
 
 	_makeCameraController() {
 		this._cameraController = new CameraController(this._camera, this.canvas);
-		this._cameraController.minDistance = 300;
-		this._cameraController.maxDistance = 1000;
+		this._cameraController.minDistance = 500;
+		this._cameraController.maxDistance = 1500;
 	}
 
 	_makeSphere() {
 		let side = 100;
-		this._sphere = new Sphere(this.gl, { isWire: false }, side, 15, 15);
+		this._sphere = new CustomSphere(
+			this.gl,
+			{
+				vertexShaderSrc: directionalLightShader.vertexSrc,
+				fragmentShaderSrc: directionalLightShader.fragmentSrc,
+				isWire: false
+			},
+			side,
+			15,
+			15
+		);
 		this._sphere.position.y = side;
 		this._sphere.position.x = side + 50;
 	}
 
 	_makeBox() {
 		let side = 200;
-		this._box = new Cube(
+
+		this._box = new CustomCube(
 			this.gl,
 			{
 				vertexShaderSrc: directionalLightShader.vertexSrc,
@@ -88,15 +104,22 @@ export default class App {
 			4,
 			4
 		);
+
 		this._box.position.y = side / 2;
 		this._box.position.x = -side / 2 - 50;
 	}
 
 	_makeHelper() {
-		let gridHelper = new GridHelper(this.gl, 1000, 1000, 20, 20);
+		let gridHelper = new GridHelper(this.gl, {}, 1000, 1000, 20, 20);
 		let sphereNormalHelper = new NormalHelper(this.gl, this._sphere);
 		let boxNormalHelper = new NormalHelper(this.gl, this._box);
-		this._helpers = [gridHelper, sphereNormalHelper, boxNormalHelper];
+		this._directionalLightHelper = new DirectionalLightHelper(this.gl);
+		this._helpers = [
+			gridHelper,
+			sphereNormalHelper,
+			boxNormalHelper,
+			this._directionalLightHelper
+		];
 	}
 
 	animateIn() {
@@ -112,8 +135,8 @@ export default class App {
 
 		this._camera.update();
 
-		this._sphere.render(this._camera);
-		this._box.render(this._camera);
+		this._box.render(this._camera, this._directionalLightHelper.lightDirection);
+		this._sphere.render(this._camera, this._directionalLightHelper.lightDirection);
 		this._helpers.forEach(helper => {
 			helper.render(this._camera);
 		});
