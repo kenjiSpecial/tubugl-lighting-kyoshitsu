@@ -12,8 +12,6 @@ import { PerspectiveCamera, CameraController } from 'tubugl-camera';
 import { DEPTH_TEST } from 'tubugl-constants';
 import { CustomCube, CustomSphere } from './components/CustomShape';
 
-// console.log(CustomCube);
-
 const directionalLightShader = {
 	vertexSrc: require('../../src/directionalLighting/shader.vert'),
 	fragmentSrc: require('../../src/directionalLighting/shader.frag')

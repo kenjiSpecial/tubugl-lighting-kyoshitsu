@@ -10,8 +10,9 @@ void main() {
 import { mathUtils } from 'tubugl-utils';
 
 export class PointLightHelper {
-	constructor(gl, params = {}, dir) {
+	constructor(gl, params = {}, pointLight) {
 		this._gl = gl;
+		this._pointLight = pointLight;
 
 		this._rad = params.rad ? params.rad : 500;
 
@@ -63,15 +64,8 @@ export class PointLightHelper {
 
 		this._cylinderModelMatrix = mat4.create();
 
-		if (dir) {
-			this._theta = Math.atan2(dir[0], dir[2]); // equator angle around y-up axis
-			this._phi = Math.acos(dir[1]);
-		} else {
-			this._theta = 0;
-			this._phi = Math.PI / 2;
-		}
-
-		this.shininess = 10.0;
+		this._theta = 0;
+		this._phi = Math.PI / 2;
 
 		this.position = vec3.create();
 		this.updatePosition();
@@ -89,6 +83,7 @@ export class PointLightHelper {
 		mat4.invert(_mat4, _mat4);
 
 		this._sphere.updateModelMatrix(_mat4);
+		vec3.copy(this._pointLight.position, this.position);
 	}
 
 	render(camera) {
@@ -108,7 +103,7 @@ export class PointLightHelper {
 
 	addGui(gui) {
 		let pointLightFolder = gui.addFolder('Point Light');
-		pointLightFolder.add(this, 'shininess', 2.0, 100.0);
+		pointLightFolder.add(this._pointLight, 'shininess', 2.0, 100.0);
 		pointLightFolder
 			.add(this, '_theta', 0, 2 * Math.PI)
 			.step(0.01)

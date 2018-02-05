@@ -3,6 +3,7 @@ const TweenLite = require('gsap/src/uncompressed/TweenLite');
 const Stats = require('stats.js');
 const chroma = require('chroma-js');
 
+import { PointLight } from '../../src/pointLight';
 import { PointLightHelper } from '../../src/pointLightHelper';
 
 import { NormalHelper, GridHelper } from 'tubugl-helper';
@@ -29,6 +30,7 @@ export default class App {
 		this._setClearConfig();
 		this._makeCamera();
 		this._makeCameraController();
+		this._makePointLight();
 		this._makeSphere();
 		this._makeBox();
 		this._makeHelper();
@@ -87,6 +89,10 @@ export default class App {
 		this._cameraController.maxDistance = 1500;
 	}
 
+	_makePointLight() {
+		this._pointLight = new PointLight(0, 0, 0, 12);
+	}
+
 	_makeSphere() {
 		let side = 100;
 		this._sphere = new CustomSphere(
@@ -134,7 +140,7 @@ export default class App {
 		let gridHelper = new GridHelper(this.gl, {}, 1000, 1000, 20, 20);
 		let sphereNormalHelper = new NormalHelper(this.gl, this._sphere);
 		let boxNormalHelper = new NormalHelper(this.gl, this._box);
-		this._pointLightHelper = new PointLightHelper(this.gl);
+		this._pointLightHelper = new PointLightHelper(this.gl, {}, this._pointLight);
 
 		this._helpers = [gridHelper, this._pointLightHelper];
 		this._normalHelpers = [sphereNormalHelper, boxNormalHelper];
@@ -153,23 +159,8 @@ export default class App {
 
 		this._camera.update();
 
-		this._box.render(
-			this._camera,
-			{
-				position: this._pointLightHelper.position,
-				shininess: this._pointLightHelper.shininess
-			},
-			this._glBoxColor
-		);
-
-		this._sphere.render(
-			this._camera,
-			{
-				position: this._pointLightHelper.position,
-				shininess: this._pointLightHelper.shininess
-			},
-			this._glSphereColor
-		);
+		this._box.render(this._camera, this._pointLight, this._glBoxColor);
+		this._sphere.render(this._camera, this._pointLight, this._glSphereColor);
 
 		this._helpers.forEach(helper => {
 			helper.render(this._camera);
