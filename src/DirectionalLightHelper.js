@@ -9,10 +9,13 @@ void main() {
 import { lookAtCustom } from 'tubugl-utils/src/mathUtils';
 
 export class DirectionalLightHelper {
-	constructor(gl, params = {}, dir) {
+	constructor(gl, params = {}, directionalLight) {
 		this._gl = gl;
 
-		this._rad = 500;
+		this._rad = params.rad ? params.rad : 500;
+		this._theta = 0;
+		this._phi = Math.PI / 2;
+		this._directionalLight = directionalLight;
 
 		this._plane = new Plane(
 			this._gl,
@@ -61,15 +64,6 @@ export class DirectionalLightHelper {
 
 		this._cylinderModelMatrix = mat4.create();
 
-		if (dir) {
-			this._theta = Math.atan2(dir[0], dir[2]); // equator angle around y-up axis
-			this._phi = Math.acos(dir[1]);
-		} else {
-			this._theta = 0;
-			this._phi = Math.PI / 2;
-		}
-
-		this.lightDirection = vec3.create();
 		this.position = vec3.create();
 		this.updatePosition();
 	}
@@ -86,11 +80,10 @@ export class DirectionalLightHelper {
 
 		this._plane.updateModelMatrix(_mat4);
 
-		vec3.normalize(this.lightDirection, [
-			-this.position[0],
-			-this.position[1],
-			-this.position[2]
-		]);
+		let vector = vec3.create();
+		vec3.normalize(vector, [-this.position[0], -this.position[1], -this.position[2]]);
+
+		this._directionalLight.direction.setArray(vector);
 	}
 
 	render(camera) {

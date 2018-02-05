@@ -17,13 +17,13 @@ export class CustomCube extends Cube {
 		this.isAnimation = params.isAnimation;
 	}
 
-	render(camera, direction, color) {
+	render(camera, directionalLight, color) {
 		if (this.isAnimation) this.rotation.y += 0.01;
 
-		this.update(camera, direction, color).draw();
+		this.update(camera, directionalLight, color).draw();
 	}
 
-	update(camera, direction, color) {
+	update(camera, directionalLight, color) {
 		super.update(camera);
 		let _mat4 = mat4.create();
 		mat4.invert(_mat4, this.modelMatrix);
@@ -31,9 +31,9 @@ export class CustomCube extends Cube {
 
 		this._gl.uniform3f(
 			this._program.getUniforms('uReverseLightDirection').location,
-			-direction[0],
-			-direction[1],
-			-direction[2]
+			-directionalLight.direction.array[0],
+			-directionalLight.direction.array[1],
+			-directionalLight.direction.array[2]
 		);
 
 		this._gl.uniform3f(
@@ -55,13 +55,13 @@ export class CustomSphere extends Sphere {
 		this.isAnimation = params.isAnimation;
 	}
 
-	render(camera, direction, color) {
+	render(camera, directionalLight, color) {
 		if (this.isAnimation) this.rotation.y += 0.01;
 
-		this.update(camera, direction, color).draw();
+		this.update(camera, directionalLight, color).draw();
 	}
 
-	update(camera, direction, color) {
+	update(camera, directionalLight, color) {
 		super.update(camera);
 
 		let _mat4 = mat4.create();
@@ -70,9 +70,9 @@ export class CustomSphere extends Sphere {
 
 		this._gl.uniform3f(
 			this._program.getUniforms('uReverseLightDirection').location,
-			-direction[0],
-			-direction[1],
-			-direction[2]
+			-directionalLight.direction.array[0],
+			-directionalLight.direction.array[1],
+			-directionalLight.direction.array[2]
 		);
 		this._gl.uniform3f(
 			this._program.getUniforms('uDiffuse').location,

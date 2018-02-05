@@ -3,6 +3,7 @@ const TweenLite = require('gsap/src/uncompressed/TweenLite');
 const Stats = require('stats.js');
 const chroma = require('chroma-js');
 
+import { DirectionalLight } from '../../src/directionalLight';
 import { DirectionalLightHelper } from '../../src/directionalLightHelper';
 
 import { NormalHelper, GridHelper } from 'tubugl-helper';
@@ -31,6 +32,7 @@ export default class App {
 		this._setClearConfig();
 		this._makeCamera();
 		this._makeCameraController();
+		this._makeDirectionalLight();
 		this._makeSphere();
 		this._makeBox();
 		this._makeHelper();
@@ -89,6 +91,10 @@ export default class App {
 		this._cameraController.maxDistance = 1500;
 	}
 
+	_makeDirectionalLight() {
+		this._directionalLight = new DirectionalLight();
+	}
+
 	_makeSphere() {
 		let side = 100;
 		this._sphere = new CustomSphere(
@@ -136,7 +142,11 @@ export default class App {
 		let gridHelper = new GridHelper(this.gl, {}, 1000, 1000, 20, 20);
 		let sphereNormalHelper = new NormalHelper(this.gl, this._sphere);
 		let boxNormalHelper = new NormalHelper(this.gl, this._box);
-		this._directionalLightHelper = new DirectionalLightHelper(this.gl);
+		this._directionalLightHelper = new DirectionalLightHelper(
+			this.gl,
+			{},
+			this._directionalLight
+		);
 
 		this._helpers = [gridHelper, this._directionalLightHelper];
 		this._normalHelpers = [sphereNormalHelper, boxNormalHelper];
@@ -155,16 +165,8 @@ export default class App {
 
 		this._camera.update();
 
-		this._box.render(
-			this._camera,
-			this._directionalLightHelper.lightDirection,
-			this._glBoxColor
-		);
-		this._sphere.render(
-			this._camera,
-			this._directionalLightHelper.lightDirection,
-			this._glSphereColor
-		);
+		this._box.render(this._camera, this._directionalLight, this._glBoxColor);
+		this._sphere.render(this._camera, this._directionalLight, this._glSphereColor);
 		this._helpers.forEach(helper => {
 			helper.render(this._camera);
 		});

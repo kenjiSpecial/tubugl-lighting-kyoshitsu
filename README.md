@@ -39,7 +39,7 @@ yarn run 00 # 00 -
 
 ## Directioal Light
 
-- [ ] make directional light class file in src
+- [x] make directional light class file in src
 
 
 ### Point Light
