@@ -6,7 +6,7 @@ void main() {
     gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
 }`;
 
-import { mathUtils } from 'tubugl-utils';
+import { lookAtCustom } from 'tubugl-utils/src/mathUtils';
 
 export class DirectionalLightHelper {
 	constructor(gl, params = {}, dir) {
@@ -81,7 +81,7 @@ export class DirectionalLightHelper {
 		this.position[2] = sinPhiRadius * Math.cos(this._theta);
 
 		let _mat4 = mat4.create();
-		mathUtils.lookAtCustom(_mat4, this.position, [0, 0, 0], [0, 1, 0]);
+		lookAtCustom(_mat4, this.position, [0, 0, 0], [0, 1, 0]);
 		mat4.invert(_mat4, _mat4);
 
 		this._plane.updateModelMatrix(_mat4);
