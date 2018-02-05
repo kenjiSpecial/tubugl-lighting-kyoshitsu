@@ -1,5 +1,6 @@
 import { Cube } from 'tubugl-3d-shape';
 import { Sphere } from 'tubugl-3d-shape/src/sphere';
+import { mat4 } from 'gl-matrix';
 
 export class CustomCube extends Cube {
 	constructor(
@@ -13,26 +14,39 @@ export class CustomCube extends Cube {
 		depthSegment = 1
 	) {
 		super(gl, params, width, height, depth, widthSegment, heightSegment, depthSegment);
+		this.isAnimation = !!params.isAnimation;
 	}
 
-	render(camera, direction, color) {
-		this.update(camera, direction, color).draw();
+	render(camera, light, color) {
+		if (this.isAnimation) this.rotation.y += 0.01;
+
+		this.update(camera, light, color).draw();
 	}
 
-	update(camera, direction, color) {
+	update(camera, light, color) {
 		super.update(camera);
+		let _mat4 = mat4.create();
+		mat4.invert(_mat4, this.modelMatrix);
+		mat4.transpose(_mat4, _mat4);
+
 		this._gl.uniform3f(
-			this._program.getUniforms('uReverseLightDirection').location,
-			-direction[0],
-			-direction[1],
-			-direction[2]
+			this._program.getUniforms('uLightWorldPosition').location,
+			light.position[0],
+			light.position[1],
+			light.position[2]
 		);
+
+		this._gl.uniform1f(this._program.getUniforms('uShininess').location, light.shininess);
+
 		this._gl.uniform3f(
 			this._program.getUniforms('uDiffuse').location,
 			color[0],
 			color[1],
 			color[2]
 		);
+
+		this._gl.uniformMatrix4fv(this._program.getUniforms('normalMatrix').location, false, _mat4);
+
 		return this;
 	}
 }
@@ -40,26 +54,40 @@ export class CustomCube extends Cube {
 export class CustomSphere extends Sphere {
 	constructor(gl, params = {}, radius = 100, widthSegments = 10, heightSegments = 10) {
 		super(gl, params, radius, widthSegments, heightSegments);
+		this.isAnimation = !!params.isAnimation;
 	}
 
-	render(camera, direction, color) {
-		this.update(camera, direction, color).draw();
+	render(camera, light, color) {
+		if (this.isAnimation) this.rotation.y += 0.01;
+
+		this.update(camera, light, color).draw();
 	}
 
-	update(camera, direction, color) {
+	update(camera, light, color) {
 		super.update(camera);
+
+		let _mat4 = mat4.create();
+		mat4.invert(_mat4, this.modelMatrix);
+		mat4.transpose(_mat4, _mat4);
+
 		this._gl.uniform3f(
-			this._program.getUniforms('uReverseLightDirection').location,
-			-direction[0],
-			-direction[1],
-			-direction[2]
+			this._program.getUniforms('uLightWorldPosition').location,
+			light.position[0],
+			light.position[1],
+			light.position[2]
 		);
+
+		this._gl.uniform1f(this._program.getUniforms('uShininess').location, light.shininess);
+
 		this._gl.uniform3f(
 			this._program.getUniforms('uDiffuse').location,
 			color[0],
 			color[1],
 			color[2]
 		);
+
+		this._gl.uniformMatrix4fv(this._program.getUniforms('normalMatrix').location, false, _mat4);
+
 		return this;
 	}
 }

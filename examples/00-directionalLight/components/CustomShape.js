@@ -35,6 +35,7 @@ export class CustomCube extends Cube {
 			-direction[1],
 			-direction[2]
 		);
+
 		this._gl.uniform3f(
 			this._program.getUniforms('uDiffuse').location,
 			color[0],

@@ -13,7 +13,7 @@ export class PointLightHelper {
 	constructor(gl, params = {}, dir) {
 		this._gl = gl;
 
-		this._rad = 500;
+		this._rad = params.rad ? params.rad : 500;
 
 		this._sphere = new Sphere(
 			this._gl,
@@ -71,7 +71,8 @@ export class PointLightHelper {
 			this._phi = Math.PI / 2;
 		}
 
-		this.lightDirection = vec3.create();
+		this.shininess = 10.0;
+
 		this.position = vec3.create();
 		this.updatePosition();
 	}
@@ -88,12 +89,6 @@ export class PointLightHelper {
 		mat4.invert(_mat4, _mat4);
 
 		this._sphere.updateModelMatrix(_mat4);
-
-		vec3.normalize(this.lightDirection, [
-			-this.position[0],
-			-this.position[1],
-			-this.position[2]
-		]);
 	}
 
 	render(camera) {
@@ -112,8 +107,9 @@ export class PointLightHelper {
 	resize() {}
 
 	addGui(gui) {
-		let directionLightFolder = gui.addFolder('directionalLight');
-		directionLightFolder
+		let pointLightFolder = gui.addFolder('Point Light');
+		pointLightFolder.add(this, 'shininess', 2.0, 100.0);
+		pointLightFolder
 			.add(this, '_theta', 0, 2 * Math.PI)
 			.step(0.01)
 			.name('theta')
@@ -121,7 +117,7 @@ export class PointLightHelper {
 				this.updatePosition();
 			});
 
-		directionLightFolder
+		pointLightFolder
 			.add(this, '_phi', 0, Math.PI)
 			.step(0.01)
 			.name('phi')

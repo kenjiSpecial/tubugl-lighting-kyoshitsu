@@ -35,7 +35,17 @@ yarn run 00 # 00 -
 
 ```
 
+## TODO
 
+## Directioal Light
+
+- [ ] make directional light class file in src
+
+
+### Point Light
+ 
+ - [ ] make point light class file in src
+ - [ ] make properties of shininess color and lighing color  
 
 reference:
 

@@ -12,8 +12,8 @@ import { DEPTH_TEST } from 'tubugl-constants';
 import { CustomCube, CustomSphere } from './components/CustomShape';
 
 const directionalLightShader = {
-	vertexSrc: require('../../src/0-directionalLighting/shader.vert'),
-	fragmentSrc: require('../../src/0-directionalLighting/shader.frag')
+	vertexSrc: require('../../src/pointLighting/shader.vert'),
+	fragmentSrc: require('../../src/pointLighting/shader.frag')
 };
 
 export default class App {
@@ -56,6 +56,8 @@ export default class App {
 			.onChange(() => {
 				this._glBoxColor = chroma(this._boxColor).gl();
 			});
+		boxFolderGui.add(this._box, 'isAnimation');
+
 		let sphereFolderGui = this.gui.addFolder('sphere');
 		sphereFolderGui
 			.addColor(this, '_sphereColor')
@@ -63,6 +65,7 @@ export default class App {
 			.onChange(() => {
 				this._glSphereColor = chroma(this._sphereColor).gl();
 			});
+		sphereFolderGui.add(this._sphere, 'isAnimation');
 	}
 
 	_setClearConfig() {
@@ -123,7 +126,7 @@ export default class App {
 
 		this._box.position.y = side / 2;
 		this._box.position.x = -side / 2 - 50;
-		this._boxColor = '#ffffff';
+		this._boxColor = '#ff0000';
 		this._glBoxColor = chroma(this._boxColor).gl();
 	}
 
@@ -150,12 +153,24 @@ export default class App {
 
 		this._camera.update();
 
-		this._box.render(this._camera, this._pointLightHelper.lightDirection, this._glBoxColor);
+		this._box.render(
+			this._camera,
+			{
+				position: this._pointLightHelper.position,
+				shininess: this._pointLightHelper.shininess
+			},
+			this._glBoxColor
+		);
+
 		this._sphere.render(
 			this._camera,
-			this._pointLightHelper.lightDirection,
+			{
+				position: this._pointLightHelper.position,
+				shininess: this._pointLightHelper.shininess
+			},
 			this._glSphereColor
 		);
+
 		this._helpers.forEach(helper => {
 			helper.render(this._camera);
 		});
