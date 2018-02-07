@@ -45,19 +45,9 @@ export class CustomCube extends Cube {
 
 		this._gl.uniform1f(this._program.getUniforms('uShininess').location, light.shininess);
 
-		this._gl.uniform3f(
-			this._program.getUniforms('uLightColor').location,
-			light.glLightColor[0],
-			light.glLightColor[1],
-			light.glLightColor[2]
-		);
+		this._gl.uniform3f(this._program.getUniforms('uLightColor').location, 1.0, 0.0, 0.0);
 
-		this._gl.uniform3f(
-			this._program.getUniforms('uSpecularColor').location,
-			light.glSpecularColor[0],
-			light.glSpecularColor[1],
-			light.glSpecularColor[2]
-		);
+		this._gl.uniform3f(this._program.getUniforms('uSpecularColor').location, 1.0, 1.0, 1.0);
 
 		this._gl.uniformMatrix4fv(this._program.getUniforms('normalMatrix').location, false, _mat4);
 
@@ -100,19 +90,9 @@ export class CustomSphere extends Sphere {
 
 		this._gl.uniform1f(this._program.getUniforms('uShininess').location, light.shininess);
 
-		this._gl.uniform3f(
-			this._program.getUniforms('uLightColor').location,
-			light.glLightColor[0],
-			light.glLightColor[1],
-			light.glLightColor[2]
-		);
+		this._gl.uniform3f(this._program.getUniforms('uLightColor').location, 1.0, 0.0, 0.0);
 
-		this._gl.uniform3f(
-			this._program.getUniforms('uSpecularColor').location,
-			light.glSpecularColor[0],
-			light.glSpecularColor[1],
-			light.glSpecularColor[2]
-		);
+		this._gl.uniform3f(this._program.getUniforms('uSpecularColor').location, 1.0, 1.0, 1.0);
 
 		this._gl.uniformMatrix4fv(this._program.getUniforms('normalMatrix').location, false, _mat4);
 

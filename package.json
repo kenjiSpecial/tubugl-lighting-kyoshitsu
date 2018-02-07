@@ -9,6 +9,11 @@
     "dist00": "parcel build examples/00-directionalLight/index.html -d docs/00 --public-url ./",
     "screenshot00": "node ./node/screenshot.js --dir=00",
     "01": "parcel examples/01-pointLight/index.html --no-hmr",
+    "dist01": "parcel build examples/01-pointLight/index.html -d docs/01 --public-url ./",
+    "screenshot01": "node ./node/screenshot.js --dir=01",
+    "02": "parcel examples/02-spotLight/index.html --no-hmr",
+    "dist02": "parcel build examples/02-spotLight/index.html -d docs/02 --public-url ./",
+    "screenshot02": "node ./node/screenshot.js --dir=02",
     "docs": "python -m SimpleHTTPServer 8000"
   },
   "dependencies": {
@@ -18,7 +23,7 @@
     "tubugl-constants": "^1.0.3",
     "tubugl-core": "^1.1.9",
     "tubugl-math": "^1.1.10",
-    "tubugl-utils": "^1.0.7"
+    "tubugl-utils": "^1.0.9"
   },
   "devDependencies": {
     "babel-preset-env": "^1.6.1",

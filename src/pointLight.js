@@ -16,7 +16,7 @@ export class PointLight {
 		vec3.set(this.position, xx, yy, zz);
 
 		this.lightColor = lightColor;
-		this.specualrColor = specualrColor;
+		this.specularColor = specualrColor;
 	}
 
 	set lightColor(value) {
@@ -30,10 +30,10 @@ export class PointLight {
 
 	set specularColor(value) {
 		this._specularColor = value;
-		this.glSpecualrColor = chroma(this._specularColor).gl();
+		this.glSpecularColor = chroma(this._specularColor).gl();
 	}
 
-	get specualrColor() {
+	get specularColor() {
 		return this._specularColor;
 	}
 }

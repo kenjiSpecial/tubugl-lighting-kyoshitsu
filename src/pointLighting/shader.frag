@@ -6,6 +6,8 @@ varying vec3 vSurfacetoView;
 
 uniform vec3 uDiffuse;
 uniform float uShininess;
+uniform vec3 uLightColor;
+uniform vec3 uSpecularColor;
 
 void main(){
     vec3 normal = normalize(vNormal);
@@ -14,9 +16,7 @@ void main(){
     vec3 halfVector = normalize(surfaceToLightDirection + surfaceToViewDirection);
 
     float light = max(dot(normal, surfaceToLightDirection), 0.0);
-    float specular = 0.;
-    if(light > 0.){
-        specular = pow(max(dot(normal, halfVector), 0.0), uShininess );
-    }
-    gl_FragColor = vec4(uDiffuse * light + vec3(specular), 1.0);
+    float specular = pow(max(dot(normal, halfVector), 0.0), uShininess );
+
+    gl_FragColor = vec4(uDiffuse * light * uLightColor +   vec3(specular) * uSpecularColor, 1.0);
 }
