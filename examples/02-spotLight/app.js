@@ -32,8 +32,8 @@ export default class App {
 		this._makeCamera();
 		this._makeCameraController();
 		this._makeSpotLight();
-		// this._makeSphere();
-		// this._makeBox();
+		this._makeSphere();
+		this._makeBox();
 		this._makeHelper();
 		this.resize(this._width, this._height);
 
@@ -50,9 +50,10 @@ export default class App {
 	_addGui() {
 		this.gui = new dat.GUI();
 		this.playAndStopGui = this.gui.add(this, '_playAndStop').name('pause');
+		this._spotLightHelper.addGui(this.gui);
+
 		/**
 		this.gui.add(this, '_isNormalHelper');
-		this._pointLightHelper.addGui(this.gui);
 		let boxFolderGui = this.gui.addFolder('box');
 		boxFolderGui
 			.addColor(this, '_boxColor')
@@ -93,7 +94,7 @@ export default class App {
 	}
 
 	_makeSpotLight() {
-		this._spotLight = new SpotLight(0, 0, 0, 12, 20);
+		this._spotLight = new SpotLight(0, 0, 0, 12, 20, 30);
 	}
 
 	_makeSphere() {
@@ -163,8 +164,9 @@ export default class App {
 
 		this._camera.update();
 
-		// this._box.render(this._camera, this._pointLight, this._glBoxColor);
-		// this._sphere.render(this._camera, this._pointLight, this._glSphereColor);
+		this._box.render(this._camera, this._spotLight, this._glBoxColor);
+
+		this._sphere.render(this._camera, this._spotLight, this._glSphereColor);
 
 		this._helpers.forEach(helper => {
 			helper.render(this._camera);

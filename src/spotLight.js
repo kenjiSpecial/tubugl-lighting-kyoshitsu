@@ -2,20 +2,39 @@ import { vec3 } from 'gl-matrix';
 import { mathUtils } from 'tubugl-utils';
 
 export class SpotLight {
-	constructor(xx = 0, yy = 0, zz = 0, shininess = 12, limitDegree = 20) {
+	constructor(
+		xx = 0,
+		yy = 0,
+		zz = 0,
+		shininess = 12,
+		innerLimitDegree = 20,
+		outerLimitDegree = 30
+	) {
 		this.shininess = shininess;
 		this.position = vec3.create();
+		this.lightDirection = vec3.create();
 		vec3.set(this.position, xx, yy, zz);
-		this.limitDegree = limitDegree;
+
+		this.innerLimitDegree = innerLimitDegree;
+		this.outerLimitDegree = outerLimitDegree;
 	}
 
-	get limitDegree() {
-		return this._limitValue;
+	get outerLimitDegree() {
+		return this._outerLimitValue;
 	}
 
-	set limitDegree(value) {
-		this._limitValue = value;
-		this.limitValue = Math.cos(degToRad(this._limitValue));
+	set outerLimitDegree(value) {
+		this._outerLimitValue = value;
+		this.outerLimitValue = Math.cos(degToRad(this._outerLimitValue));
+	}
+
+	get innerLimitDegree() {
+		return this._innerLimitValue;
+	}
+
+	set innerLimitDegree(value) {
+		this._innerLimitValue = value;
+		this.innerLimitValue = Math.cos(degToRad(this._innerLimitValue));
 	}
 }
 

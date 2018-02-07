@@ -23,7 +23,7 @@ export class CustomCube extends Cube {
 		this.update(camera, light, color).draw();
 	}
 
-	update(camera, light, color) {
+	update(camera, spotLight, color) {
 		super.update(camera);
 		let _mat4 = mat4.create();
 		mat4.invert(_mat4, this.modelMatrix);
@@ -38,16 +38,30 @@ export class CustomCube extends Cube {
 
 		this._gl.uniform3f(
 			this._program.getUniforms('uLightWorldPosition').location,
-			light.position[0],
-			light.position[1],
-			light.position[2]
+			spotLight.position[0],
+			spotLight.position[1],
+			spotLight.position[2]
 		);
 
-		this._gl.uniform1f(this._program.getUniforms('uShininess').location, light.shininess);
+		this._gl.uniform3f(
+			this._program.getUniforms('uLightDirection').location,
+			spotLight.lightDirection[0],
+			spotLight.lightDirection[1],
+			spotLight.lightDirection[2]
+		);
+		this._gl.uniform1f(
+			this._program.getUniforms('uInnerLimit').location,
+			spotLight.innerLimitValue
+		);
+		this._gl.uniform1f(
+			this._program.getUniforms('uOuterLimit').location,
+			spotLight.outerLimitValue
+		);
 
-		this._gl.uniform3f(this._program.getUniforms('uLightColor').location, 1.0, 0.0, 0.0);
+		this._gl.uniform1f(this._program.getUniforms('uShininess').location, spotLight.shininess);
 
-		this._gl.uniform3f(this._program.getUniforms('uSpecularColor').location, 1.0, 1.0, 1.0);
+		// this._gl.uniform3f(this._program.getUniforms('uLightColor').location, 1.0, 0.0, 0.0);
+		// this._gl.uniform3f(this._program.getUniforms('uSpecularColor').location, 1.0, 1.0, 1.0);
 
 		this._gl.uniformMatrix4fv(this._program.getUniforms('normalMatrix').location, false, _mat4);
 
@@ -67,9 +81,8 @@ export class CustomSphere extends Sphere {
 		this.update(camera, light, color).draw();
 	}
 
-	update(camera, light, color) {
+	update(camera, spotLight, color) {
 		super.update(camera);
-
 		let _mat4 = mat4.create();
 		mat4.invert(_mat4, this.modelMatrix);
 		mat4.transpose(_mat4, _mat4);
@@ -83,16 +96,30 @@ export class CustomSphere extends Sphere {
 
 		this._gl.uniform3f(
 			this._program.getUniforms('uLightWorldPosition').location,
-			light.position[0],
-			light.position[1],
-			light.position[2]
+			spotLight.position[0],
+			spotLight.position[1],
+			spotLight.position[2]
 		);
 
-		this._gl.uniform1f(this._program.getUniforms('uShininess').location, light.shininess);
+		this._gl.uniform3f(
+			this._program.getUniforms('uLightDirection').location,
+			spotLight.lightDirection[0],
+			spotLight.lightDirection[1],
+			spotLight.lightDirection[2]
+		);
+		this._gl.uniform1f(
+			this._program.getUniforms('uInnerLimit').location,
+			spotLight.innerLimitValue
+		);
+		this._gl.uniform1f(
+			this._program.getUniforms('uOuterLimit').location,
+			spotLight.outerLimitValue
+		);
 
-		this._gl.uniform3f(this._program.getUniforms('uLightColor').location, 1.0, 0.0, 0.0);
+		this._gl.uniform1f(this._program.getUniforms('uShininess').location, spotLight.shininess);
 
-		this._gl.uniform3f(this._program.getUniforms('uSpecularColor').location, 1.0, 1.0, 1.0);
+		// this._gl.uniform3f(this._program.getUniforms('uLightColor').location, 1.0, 0.0, 0.0);
+		// this._gl.uniform3f(this._program.getUniforms('uSpecularColor').location, 1.0, 1.0, 1.0);
 
 		this._gl.uniformMatrix4fv(this._program.getUniforms('normalMatrix').location, false, _mat4);
 
