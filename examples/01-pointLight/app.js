@@ -90,7 +90,7 @@ export default class App {
 	}
 
 	_makePointLight() {
-		this._pointLight = new PointLight(0, 0, 0, 12);
+		this._pointLight = new PointLight(0, 0, 0, 30);
 	}
 
 	_makeSphere() {

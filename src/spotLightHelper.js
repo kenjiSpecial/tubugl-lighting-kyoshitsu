@@ -77,7 +77,7 @@ export class SpotLightHelper {
 
 		this._cylinderModelMatrix = mat4.create();
 
-		this._theta = Math.PI / 10;
+		this._theta = 0;
 		this._phi = Math.PI / 2;
 
 		this._lightDirection = {
@@ -87,6 +87,7 @@ export class SpotLightHelper {
 
 		this.position = vec3.create();
 		this.lightDirection = vec3.create();
+		this.trans = { x: -150, y: 0 };
 
 		this.updatePosition();
 		this.updateLightDirection();
@@ -94,8 +95,8 @@ export class SpotLightHelper {
 
 	updatePosition() {
 		let sinPhiRadius = Math.sin(this._phi) * this._rad;
-		this.position[0] = sinPhiRadius * Math.sin(this._theta);
-		this.position[1] = Math.cos(this._phi) * this._rad;
+		this.position[0] = sinPhiRadius * Math.sin(this._theta) + this.trans.x;
+		this.position[1] = Math.cos(this._phi) * this._rad + this.trans.y;
 		this.position[2] = sinPhiRadius * Math.cos(this._theta);
 
 		let _mat4 = mat4.create();
@@ -178,6 +179,22 @@ export class SpotLightHelper {
 			.add(this, '_phi', 0, Math.PI)
 			.step(0.01)
 			.name('phi')
+			.onChange(() => {
+				this.updatePosition();
+				this.updateLightDirection();
+			});
+
+		spotLightPosition
+			.add(this.trans, 'x', -200, 200)
+			.name('transX')
+			.onChange(() => {
+				this.updatePosition();
+				this.updateLightDirection();
+			});
+
+		spotLightPosition
+			.add(this.trans, 'y', -200, 200)
+			.name('transY')
 			.onChange(() => {
 				this.updatePosition();
 				this.updateLightDirection();

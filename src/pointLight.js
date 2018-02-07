@@ -7,7 +7,7 @@ export class PointLight {
 		xx = 0,
 		yy = 0,
 		zz = 0,
-		shininess = 12,
+		shininess = 30,
 		lightColor = '#ffffff',
 		specualrColor = '#ffffff'
 	) {

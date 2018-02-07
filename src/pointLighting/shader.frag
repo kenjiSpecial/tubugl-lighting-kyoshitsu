@@ -15,8 +15,15 @@ void main(){
     vec3 surfaceToViewDirection = normalize(vSurfacetoView);
     vec3 halfVector = normalize(surfaceToLightDirection + surfaceToViewDirection);
 
-    float light = max(dot(normal, surfaceToLightDirection), 0.0);
-    float specular = pow(max(dot(normal, halfVector), 0.0), uShininess );
+    float light = dot(normal, surfaceToLightDirection);
+    float specular = 0.0;
+    if (light > 0.0) {
+        specular = pow(dot(normal, halfVector), uShininess);
+    }
 
-    gl_FragColor = vec4(uDiffuse * light * uLightColor +   vec3(specular) * uSpecularColor, 1.0);
+    gl_FragColor = vec4(uDiffuse, 1.0);
+    gl_FragColor.rgb *= light * uLightColor;
+    gl_FragColor.rgb +=   specular * uSpecularColor;
+
+    // gl_FragColor.rgb = vec3(1.0)/2.0 + surfaceToViewDirection/2.0;
 }

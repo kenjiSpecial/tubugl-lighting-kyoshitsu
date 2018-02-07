@@ -37,6 +37,13 @@ export class CustomCube extends Cube {
 		);
 
 		this._gl.uniform3f(
+			this._program.getUniforms('uCameraPosition').location,
+			camera.position.x,
+			camera.position.y,
+			camera.position.z
+		);
+
+		this._gl.uniform3f(
 			this._program.getUniforms('uLightWorldPosition').location,
 			spotLight.position[0],
 			spotLight.position[1],
@@ -92,6 +99,13 @@ export class CustomSphere extends Sphere {
 			color[0],
 			color[1],
 			color[2]
+		);
+
+		this._gl.uniform3f(
+			this._program.getUniforms('uCameraPosition').location,
+			camera.position.x,
+			camera.position.y,
+			camera.position.z
 		);
 
 		this._gl.uniform3f(

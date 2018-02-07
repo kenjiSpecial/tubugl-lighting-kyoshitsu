@@ -27,43 +27,6 @@ export class PointLightHelper {
 			10
 		);
 
-		this._cylinder = new Cylinder(
-			this._gl,
-			{
-				isWire: false,
-				disableUpdateModelMatrix: true,
-				fragmentShaderSrc: fragmentShaderSrc
-			},
-			3,
-			3,
-			100,
-			12
-		);
-		this._cone = new Cone(
-			this._gl,
-			{
-				disableUpdateModelMatrix: true,
-				fragmentShaderSrc: fragmentShaderSrc
-			},
-			8,
-			10,
-			12
-		);
-
-		this._cylinderLocalModelMatrix = mat4.create();
-		let transY = mat4.create();
-		mat4.fromTranslation(transY, [0, 0, -50.5]);
-		mat4.fromXRotation(this._cylinderLocalModelMatrix, Math.PI / 2);
-		mat4.multiply(this._cylinderLocalModelMatrix, transY, this._cylinderLocalModelMatrix);
-
-		this._coneLocalModelMatrix = mat4.create();
-		let coneTransY = mat4.create();
-		mat4.fromTranslation(coneTransY, [0, 0, -105]);
-		mat4.fromXRotation(this._coneLocalModelMatrix, -Math.PI / 2);
-		mat4.multiply(this._coneLocalModelMatrix, coneTransY, this._coneLocalModelMatrix);
-
-		this._cylinderModelMatrix = mat4.create();
-
 		this._theta = 0;
 		this._phi = Math.PI / 2;
 
@@ -88,15 +51,6 @@ export class PointLightHelper {
 
 	render(camera) {
 		this._sphere.render(camera);
-		mat4.multiply(
-			this._cylinder.modelMatrix,
-			this._sphere.modelMatrix,
-			this._cylinderLocalModelMatrix
-		);
-		this._cylinder.render(camera);
-
-		mat4.multiply(this._cone.modelMatrix, this._sphere.modelMatrix, this._coneLocalModelMatrix);
-		this._cone.render(camera);
 	}
 
 	resize() {}

@@ -1,12 +1,11 @@
 import { vec3 } from 'gl-matrix';
-import { mathUtils } from 'tubugl-utils';
 
 export class SpotLight {
 	constructor(
 		xx = 0,
 		yy = 0,
 		zz = 0,
-		shininess = 12,
+		shininess = 30,
 		innerLimitDegree = 20,
 		outerLimitDegree = 30
 	) {

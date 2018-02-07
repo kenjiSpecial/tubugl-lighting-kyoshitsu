@@ -23,13 +23,9 @@ void main(){
     float inLight = smoothstep(uOuterLimit, uInnerLimit, dotFromDirection);
     float light = inLight * dot(normal, surfaceToLightDirection);
     float specular = inLight * pow( max(dot(normal, halfVector), 0.0), uShininess);
-    // specular = max(dot(normal, halfVector), 0.0);
 
     gl_FragColor = vec4(uDiffuse, 1.0);
 
     gl_FragColor.rgb *= light;
     gl_FragColor.rgb += specular;
-    
-    gl_FragColor = vec4(vec3(specular), 1.0);
-    
 }
